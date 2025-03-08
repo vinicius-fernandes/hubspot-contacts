@@ -1,4 +1,4 @@
-package com.vinfern.hubspot.contacts.dto;
+package com.vinfern.hubspot.contacts.dto.auth;
 
 public record AuthResponse(
         String access_token,
