@@ -2,7 +2,6 @@ package com.vinfern.hubspot.contacts.services;
 
 import com.vinfern.hubspot.contacts.configuration.HubspotAuthProperties;
 import com.vinfern.hubspot.contacts.dto.auth.AuthResponse;
-import com.vinfern.hubspot.contacts.dto.auth.AuthorizationUrl;
 import com.vinfern.hubspot.contacts.exception.HubspotTokenExchangeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,14 +25,14 @@ public class AuthorizationService {
     @Autowired
     private HubspotAuthProperties hubspotAuthProperties;
 
-    public AuthorizationUrl getAuthorizationUrl() {
+    public String getAuthorizationUrl() {
         try {
             StringBuilder url = new StringBuilder(hubspotAuthProperties.getAuthorizationUrl());
             url.append("?client_id=").append(URLEncoder.encode(hubspotAuthProperties.getClientId(), StandardCharsets.UTF_8.name()));
             url.append("&redirect_uri=").append(URLEncoder.encode(hubspotAuthProperties.getAuthRedirectUrl(), StandardCharsets.UTF_8.name()));
             url.append("&scope=").append(URLEncoder.encode("oauth crm.objects.contacts.write crm.objects.contacts.read",StandardCharsets.UTF_8.name()));
 
-            return new AuthorizationUrl(url.toString());
+            return url.toString();
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException("UTF-8 encoding not supported", e);
         }
