@@ -17,11 +17,15 @@ public class ContactsService {
     @Autowired
     private HubspotAuthProperties hubspotAuthProperties;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
 
     public void createContact(Contact contact, String token) {
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.setErrorHandler(new HubspotResponseErrorHandler());
         HttpHeaders headers = new HttpHeaders();
+
         headers.set("Authorization", "Bearer " + token);
         headers.set("Content-Type", MediaType.APPLICATION_JSON_VALUE);
 
@@ -34,7 +38,6 @@ public class ContactsService {
 
         requestBody.put("properties", properties);
 
-        ObjectMapper objectMapper = new ObjectMapper();
         String jsonBody = null;
         try {
             jsonBody = objectMapper.writeValueAsString(requestBody);

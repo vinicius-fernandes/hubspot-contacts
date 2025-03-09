@@ -15,7 +15,7 @@ public class ContactsController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void createContact(@Valid @RequestBody Contact contact,@RequestHeader("Authorization") String authorizationHeader) {
+    public void createContact(@Valid @RequestBody Contact contact, @RequestHeader("Authorization") String authorizationHeader) {
 
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             String token = authorizationHeader.substring(7);
@@ -27,9 +27,5 @@ public class ContactsController {
         }
     }
 
-    @PostMapping("/webhook")
-    @ResponseStatus(HttpStatus.OK)
-    public void webHook(@RequestBody String body){
-        System.out.println(body);
-    }
+
 }
