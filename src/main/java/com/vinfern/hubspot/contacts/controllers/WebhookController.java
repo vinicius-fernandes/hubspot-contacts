@@ -24,7 +24,7 @@ public class WebhookController {
         String forwardedProto = request.getHeader("X-Forwarded-Proto");
 
         var requestUrl = request.getRequestURL().toString();
-        if ("https".equalsIgnoreCase(forwardedProto))
+        if ("http".equalsIgnoreCase(request.getProtocol()) && "https".equalsIgnoreCase(forwardedProto))
             requestUrl = requestUrl.replace("http", "https");
 
         webhookProcessingService.processRequest(new WebhookRequest(
