@@ -10,7 +10,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.verification.VerificationMode;
 
 import java.util.List;
 
@@ -28,6 +27,7 @@ public class WebhookProcessingServiceTests {
 
     @Mock
     private ObjectMapper objectMapper;
+
     @Test
     void processRequest_SuccessfulValidationAndProcessing() throws Exception {
         String validJson = "[{\"subscriptionType\":\"contact.creation\", \"objectId\": 123}]";

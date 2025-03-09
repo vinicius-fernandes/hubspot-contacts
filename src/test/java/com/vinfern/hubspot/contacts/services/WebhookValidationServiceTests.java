@@ -1,10 +1,9 @@
 package com.vinfern.hubspot.contacts.services;
 
-import com.vinfern.hubspot.contacts.configuration.HubspotAuthProperties;
+import com.vinfern.hubspot.contacts.configuration.HubspotProperties;
 import com.vinfern.hubspot.contacts.dto.webhook.ValidatedWebhook;
 import com.vinfern.hubspot.contacts.dto.webhook.WebhookRequest;
 import com.vinfern.hubspot.contacts.exception.WebhookValidationException;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -29,19 +28,16 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class WebhookValidationServiceTests {
-    @InjectMocks
-    private WebhookValidationService webhookValidationService;
-
-    @Mock
-    private HubspotAuthProperties hubspotAuthProperties;
-
     private static final String SECRET = "test_secret";
     private static final String METHOD = "POST";
     private static final String URL = "https://test.com/webhook";
     private static final String BODY = "{\"event\": \"test\"}";
     private static final long TIMESTAMP = Instant.now().toEpochMilli();
     private static final String SIGNATURE = "valid_signature";
-
+    @InjectMocks
+    private WebhookValidationService webhookValidationService;
+    @Mock
+    private HubspotProperties hubspotProperties;
 
     static Stream<Arguments> validWebhookRequests() {
         return Stream.of(
@@ -52,13 +48,14 @@ public class WebhookValidationServiceTests {
 
     static Stream<Arguments> missingHeadersRequests() {
         return Stream.of(
-                Arguments.of(null, "1631023200000", "INVALID_HEADERS", 400), // Missing Signature
-                Arguments.of(SIGNATURE, null, "INVALID_HEADERS", 400), // Missing Timestamp
-                Arguments.of(null, null, "INVALID_HEADERS", 400) // Both Missing
+                Arguments.of(null, "1631023200000", "INVALID_HEADERS", 400),
+                Arguments.of(SIGNATURE, null, "INVALID_HEADERS", 400),
+                Arguments.of(null, null, "INVALID_HEADERS", 400)
         );
     }
+
     static Stream<String> invalidTimestampRequests() {
-        return Stream.of("invalid_timestamp", "not_a_number","e");
+        return Stream.of("invalid_timestamp", "not_a_number", "e");
     }
 
 
@@ -75,7 +72,7 @@ public class WebhookValidationServiceTests {
                 request.timestamp()
         );
 
-        when(hubspotAuthProperties.getClientSecret()).thenReturn(SECRET);
+        when(hubspotProperties.getClientSecret()).thenReturn(SECRET);
 
         ValidatedWebhook result = webhookValidationService.validateRequest(validRequest);
 
@@ -116,7 +113,7 @@ public class WebhookValidationServiceTests {
 
     @Test
     void validateRequest_ExpiredTimestamp_ThrowsException() {
-        long expiredTimestamp = Instant.now().toEpochMilli() - 600_000; // 10 minutes old
+        long expiredTimestamp = Instant.now().toEpochMilli() - 600_000;
 
         WebhookRequest request = new WebhookRequest(METHOD, URL, BODY, String.valueOf(expiredTimestamp), SIGNATURE);
 
@@ -130,9 +127,9 @@ public class WebhookValidationServiceTests {
 
     @Test
     void validateRequest_InvalidSignature_ThrowsException() {
-        WebhookRequest request = new WebhookRequest(METHOD, URL, BODY,  "wrong_signature",String.valueOf(TIMESTAMP));
+        WebhookRequest request = new WebhookRequest(METHOD, URL, BODY, "wrong_signature", String.valueOf(TIMESTAMP));
 
-        when(hubspotAuthProperties.getClientSecret()).thenReturn(SECRET);
+        when(hubspotProperties.getClientSecret()).thenReturn(SECRET);
 
 
         WebhookValidationException exception = assertThrows(WebhookValidationException.class, () -> {

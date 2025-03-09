@@ -1,6 +1,6 @@
 package com.vinfern.hubspot.contacts.services;
 
-import com.vinfern.hubspot.contacts.configuration.HubspotAuthProperties;
+import com.vinfern.hubspot.contacts.configuration.HubspotProperties;
 import com.vinfern.hubspot.contacts.dto.webhook.ValidatedWebhook;
 import com.vinfern.hubspot.contacts.dto.webhook.WebhookRequest;
 import com.vinfern.hubspot.contacts.exception.WebhookValidationException;
@@ -27,7 +27,7 @@ public class WebhookValidationService {
     private static final String HMAC_ALGORITHM = "HmacSHA256";
     private final Logger logger = LoggerFactory.getLogger(WebhookValidationService.class);
     @Autowired
-    private HubspotAuthProperties hubspotAuthProperties;
+    private HubspotProperties hubspotProperties;
 
     public ValidatedWebhook validateRequest(WebhookRequest request) {
 
@@ -99,7 +99,7 @@ public class WebhookValidationService {
 
         Mac mac = Mac.getInstance(HMAC_ALGORITHM);
         SecretKeySpec secretKey = new SecretKeySpec(
-                hubspotAuthProperties.getClientSecret().getBytes(StandardCharsets.UTF_8),
+                hubspotProperties.getClientSecret().getBytes(StandardCharsets.UTF_8),
                 HMAC_ALGORITHM
         );
         mac.init(secretKey);

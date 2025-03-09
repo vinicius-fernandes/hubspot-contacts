@@ -34,9 +34,7 @@ public class WebhookProcessingService {
             var events = objectMapper.readValue(validationResult.rawBody(), new TypeReference<List<WebhookEvent>>() {
             });
 
-            var contactCreation = events.stream()
-                    .filter(f -> Objects.equals(f.subscriptionType(), "contact.creation"))
-                    .toList();
+            var contactCreation = events.stream().filter(f -> Objects.equals(f.subscriptionType(), "contact.creation")).toList();
 
             logger.info("Contact created events {}", contactCreation);
 
