@@ -1,14 +1,13 @@
 package com.vinfern.hubspot.contacts.configuration;
 
 import jakarta.annotation.PostConstruct;
-import jakarta.validation.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
 import static com.vinfern.hubspot.contacts.utils.StringUtils.isNullOrEmpty;
 
 @Configuration
-public class HubspotAuthProperties {
+public class HubspotProperties {
 
     @Value("${hubspot.client.id}")
     private String clientId;

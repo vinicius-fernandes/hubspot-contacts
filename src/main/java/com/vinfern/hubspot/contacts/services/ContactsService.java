@@ -1,7 +1,7 @@
 package com.vinfern.hubspot.contacts.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vinfern.hubspot.contacts.configuration.HubspotAuthProperties;
+import com.vinfern.hubspot.contacts.configuration.HubspotProperties;
 import com.vinfern.hubspot.contacts.dto.contact.Contact;
 import com.vinfern.hubspot.contacts.exception.HubspotResponseErrorHandler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +15,11 @@ import java.util.Map;
 @Service
 public class ContactsService {
     @Autowired
-    private HubspotAuthProperties hubspotAuthProperties;
+    private HubspotProperties hubspotProperties;
 
     @Autowired
     private ObjectMapper objectMapper;
+
 
 
     public void createContact(Contact contact, String token) {
