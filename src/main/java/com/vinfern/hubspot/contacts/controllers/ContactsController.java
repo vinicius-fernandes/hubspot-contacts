@@ -1,6 +1,7 @@
 package com.vinfern.hubspot.contacts.controllers;
 
 import com.vinfern.hubspot.contacts.dto.contact.Contact;
+import com.vinfern.hubspot.contacts.dto.contact.HubspotContact;
 import com.vinfern.hubspot.contacts.services.ContactsService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,16 +16,10 @@ public class ContactsController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void createContact(@Valid @RequestBody Contact contact, @RequestHeader("Authorization") String authorizationHeader) {
+    public HubspotContact createContact(@Valid @RequestBody Contact contact, @RequestHeader("Authorization") String authorizationHeader) {
 
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            String token = authorizationHeader.substring(7);
-            contactsService.createContact(contact,token);
+        return contactsService.createContact(contact, authorizationHeader);
 
-        }
-        else{
-            System.out.println("No bearer token");
-        }
     }
 
 

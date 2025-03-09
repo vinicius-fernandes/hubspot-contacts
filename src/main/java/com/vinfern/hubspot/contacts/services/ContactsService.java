@@ -1,60 +1,31 @@
 package com.vinfern.hubspot.contacts.services;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vinfern.hubspot.contacts.configuration.HubspotProperties;
+import com.vinfern.hubspot.contacts.clients.HubspotContactsClient;
 import com.vinfern.hubspot.contacts.dto.contact.Contact;
-import com.vinfern.hubspot.contacts.exception.HubspotResponseErrorHandler;
+import com.vinfern.hubspot.contacts.dto.contact.HubspotContact;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.*;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
-import java.util.HashMap;
-import java.util.Map;
+import static com.vinfern.hubspot.contacts.utils.AuthorizationUtils.retrieveAccessToken;
 
 @Service
 public class ContactsService {
-    @Autowired
-    private HubspotProperties hubspotProperties;
+    private static final Logger logger = LoggerFactory.getLogger(ContactsService.class);
 
     @Autowired
-    private ObjectMapper objectMapper;
+    private HubspotContactsClient hubspotContactsClient;
+
+    public HubspotContact createContact(Contact contact, String authorizationHeader) {
 
 
+        String token = retrieveAccessToken(authorizationHeader);
 
-    public void createContact(Contact contact, String token) {
-        RestTemplate restTemplate = new RestTemplate();
-        restTemplate.setErrorHandler(new HubspotResponseErrorHandler());
-        HttpHeaders headers = new HttpHeaders();
+        var createdContact = hubspotContactsClient.createContact(contact, token);
+        logger.info("Created contact {}", createdContact);
 
-        headers.set("Authorization", "Bearer " + token);
-        headers.set("Content-Type", MediaType.APPLICATION_JSON_VALUE);
-
-        Map<String, Object> requestBody = new HashMap<>();
-
-        Map<String, String> properties = new HashMap<>();
-        properties.put("email", contact.email());
-        properties.put("lastname", contact.lastName());
-        properties.put("firstname", contact.firstName());
-
-        requestBody.put("properties", properties);
-
-        String jsonBody = null;
-        try {
-            jsonBody = objectMapper.writeValueAsString(requestBody);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        HttpEntity<String> entity = new HttpEntity<>(jsonBody, headers);
-
-        ResponseEntity<String> response = restTemplate.exchange(
-                "https://api.hubapi.com/crm/v3/objects/contacts",
-                HttpMethod.POST,
-                entity,
-                String.class
-        );
-        System.out.println("Response: " + response.getBody());
-
+        return createdContact;
 
     }
 }

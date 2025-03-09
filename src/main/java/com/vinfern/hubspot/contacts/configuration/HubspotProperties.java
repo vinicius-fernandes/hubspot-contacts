@@ -1,10 +1,11 @@
 package com.vinfern.hubspot.contacts.configuration;
 
+import com.vinfern.hubspot.contacts.utils.StringUtils;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
-import static com.vinfern.hubspot.contacts.utils.StringUtils.isNullOrEmpty;
+import java.util.stream.Stream;
 
 @Configuration
 public class HubspotProperties {
@@ -24,14 +25,20 @@ public class HubspotProperties {
     @Value("${hubspot.auth.authorization.url}")
     private String authorizationUrl;
 
+    @Value("${hubspot.contacts.create.url}")
+    private String createContactUrl;
+
 
     @PostConstruct
     public void validateProperties() {
-        if (isNullOrEmpty(clientId) || isNullOrEmpty(clientSecret) ||
-                isNullOrEmpty(tokenUrl) || isNullOrEmpty(authRedirectUrl) ||
-                isNullOrEmpty(authorizationUrl)) {
+        if (hasAnyNullOrEmptyProperty()) {
             throw new IllegalStateException("One or more required HubSpot properties are missing or empty. Application cannot start.");
         }
+    }
+
+    private boolean hasAnyNullOrEmptyProperty() {
+        return Stream.of(clientId, clientSecret, tokenUrl, authRedirectUrl, authorizationUrl, createContactUrl)
+                .anyMatch(StringUtils::isNullOrEmpty);
     }
 
 
@@ -39,39 +46,28 @@ public class HubspotProperties {
         return clientId;
     }
 
-    public void setClientId(String clientId) {
-        this.clientId = clientId;
-    }
 
     public String getClientSecret() {
         return clientSecret;
     }
 
-    public void setClientSecret(String clientSecret) {
-        this.clientSecret = clientSecret;
-    }
 
     public String getTokenUrl() {
         return tokenUrl;
     }
 
-    public void setTokenUrl(String tokenUrl) {
-        this.tokenUrl = tokenUrl;
-    }
 
     public String getAuthRedirectUrl() {
         return authRedirectUrl;
     }
 
-    public void setAuthRedirectUrl(String authRedirectUrl) {
-        this.authRedirectUrl = authRedirectUrl;
-    }
 
     public String getAuthorizationUrl() {
         return authorizationUrl;
     }
 
-    public void setAuthorizationUrl(String authorizationUrl) {
-        this.authorizationUrl = authorizationUrl;
+
+    public String getCreateContactUrl() {
+        return createContactUrl;
     }
 }
