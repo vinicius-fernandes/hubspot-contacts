@@ -84,4 +84,26 @@ public class GlobalExceptionHandler {
                 List.of()
         );
     }
+
+    @ExceptionHandler(ParseException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ApplicationError handleParseException(ParseException ex) {
+
+        return new ApplicationError(
+                "Parsing error",
+                "PARSING_ERROR",
+                List.of(ex.getMessage())
+        );
+    }
+
+    @ExceptionHandler(InvalidAccessTokenException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ApplicationError handleInvalidAccessTokenException(InvalidAccessTokenException ex) {
+
+        return new ApplicationError(
+                "Invalid access token",
+                "INVALID_ACCESS_TOKEN",
+                List.of(ex.getMessage())
+        );
+    }
 }
