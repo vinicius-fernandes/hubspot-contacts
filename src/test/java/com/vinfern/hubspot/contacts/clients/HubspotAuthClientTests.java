@@ -3,24 +3,24 @@ package com.vinfern.hubspot.contacts.clients;
 import com.vinfern.hubspot.contacts.configuration.HubspotProperties;
 import com.vinfern.hubspot.contacts.dto.auth.AuthResponse;
 import com.vinfern.hubspot.contacts.exception.HubspotTokenExchangeException;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.*;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestTemplate;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class HubspotAuthClientTests {
+class HubspotAuthClientTests {
     @Mock
     private RestTemplate restTemplate;
 
@@ -81,7 +81,7 @@ public class HubspotAuthClientTests {
     @Test
     void testExchangeCodeForToken_Failure() {
 
-        var exceptionMock= mock(HttpClientErrorException.class);
+        var exceptionMock = mock(HttpClientErrorException.class);
         when(exceptionMock.getResponseBodyAsString()).thenReturn("Invalid Code");
 
         when(restTemplate.exchange(

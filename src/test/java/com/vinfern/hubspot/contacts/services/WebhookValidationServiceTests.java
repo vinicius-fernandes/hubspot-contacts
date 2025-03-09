@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class WebhookValidationServiceTests {
+class WebhookValidationServiceTests {
     private static final String SECRET = "test_secret";
     private static final String METHOD = "POST";
     private static final String URL = "https://test.com/webhook";
