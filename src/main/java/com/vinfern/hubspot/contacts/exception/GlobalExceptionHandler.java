@@ -35,12 +35,27 @@ public class GlobalExceptionHandler {
 
 
     @ExceptionHandler(HubspotResponseErrorException.class)
-    public ResponseEntity<ApplicationError> HubspotResponseErrorException(HubspotResponseErrorException ex) {
+    public ResponseEntity<ApplicationError> handleHubspotResponseErrorException(HubspotResponseErrorException ex) {
         var hubspotError = ex.getHubspotError();
         var error = new ApplicationError(
-               hubspotError.message(),
+                hubspotError.message(),
                 hubspotError.category(),
                 List.of(hubspotError.correlationId(), hubspotError.status())
+        );
+        return ResponseEntity.status(ex.getStatusCode()).body(
+                error
+        );
+    }
+
+    @ExceptionHandler(WebhookValidationException.class)
+    public ResponseEntity<ApplicationError> handleWebhookValidationException(WebhookValidationException ex) {
+
+        logger.error("Webhook exception, details: {}", ex.getMessage());
+
+        var error = new ApplicationError(
+                ex.getMessage(),
+                "WEBHOOK_VALIDATION_ERROR",
+                List.of()
         );
         return ResponseEntity.status(ex.getStatusCode()).body(
                 error
