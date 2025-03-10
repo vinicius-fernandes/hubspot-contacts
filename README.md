@@ -3,7 +3,9 @@ Este repositório implementa uma API para integração com o HubSpot, utilizando
 A API também oferece um endpoint de integração com a API do HubSpot para a criação de contatos e permite o recebimento de notificações via webhooks.
 
 ## Índice
-
+- [Estrutura do projeto](#estrutura-do-projeto)
+- [Principais tecnologias e dependências](#principais-tecnologias-e-dependências)
+- [Endpoints](#endpoints)
 - [Requisitos](#requisitos)
 - [Configuração no HubSpot](#configuração-no-hubspot)
   - [Configurações básicas](#configurações-básicas)
@@ -12,6 +14,141 @@ A API também oferece um endpoint de integração com a API do HubSpot para a cr
   - [Variáveis de ambiente](#variáveis-de-ambiente)
   - [Execução com Docker](#execução-com-docker)
 - [Contribuindo com o Projeto](#contribuindo-com-o-projeto)
+
+## Estrutura do projeto
+O projeto está estruturado da seguinte forma:
+```bash
+/contacts
+│-- src/main/java/com/vinfern/hubspot/contacts
+│   ├── clients/        # Classes que fazem chamadas para APIs externas do Hubspot utilizando o Spring REST Client
+│   ├── configuration/  # Configurações gerais da aplicação, como por exemplo as propriedades do Hubspot, configuração do RestTemplate.
+│   ├── controllers/    # Controllers responsáveis pelas requisições HTTP
+│   ├── dto/            # Data Transfer Objects (DTOs) para entrada e saída de dados
+│   ├── exception/      # Tratamento de erros e exceções personalizadas, inclui classes como GlobalExceptionHandler para lidar com as exceções e as exceções próprias do dominio da aplicação.
+│   ├── services/       # Lógica de negócios do sistema
+│   ├── utils/          # Classes utilitárias 
+│-- src/main/resources/
+│   ├── application.properties # Configuração do projeto
+│   ├── application-tests.properties # Configuração do projeto para testes
+│-- src/test/java/com/vinfern/hubspot/contacts #Contém testes unitários para as partes criticas do código
+│   ├── clients/      
+│   ├── exception/      
+│   ├── services/     
+│   ├── utils/     
+│-- pom.xml             # Dependências do projeto (Maven)
+```
+## Principais tecnologias e dependências
+- **Java 21**
+- **Spring Boot**
+- **Maven**
+- **Spring Boot Starter Web:** Para o desenvolvimento de APIs REST utilizando Spring Boot sem a necessidade de configurações manuais.
+- **Spring Boot Starter Validation:** Adiciona suporte para validação de campos com anotações como @NotBlank e @Email
+- **Spring Boot Starter Test:** Inclui o ferramental básico para tests unitários e de integração
+
+## Endpoints
+| Método  | Endpoint             | Descrição                        | Parâmetros |
+|---------|----------------------|----------------------------------|------------|
+| `GET`   | `/auth/url`          | Redireciona para a url onde o fluxo de autenticação com o Hubspot é iniciado         | Nenhum     |
+| `GET`   | `/auth/oauth-callback`      | Processa o código gerado pelo fluxo de autenticação, retornando um objeto com informações como o accesstoken     | `code` (String) |
+| `POST`  | `/contacts`          | Cria um novo contato            | Corpo da requisição (JSON) |
+| `POST`   | `/webhook`      | Escuta e processa eventos do tipo "contact.creation" enviados pelo webhook do Hubspot   | Corpo da requisição (JSON) |
+
+### Erros
+O Status Http adequado e um objeto de erro são retornados. Por exemplo, quando há um conflito na criação de um contato a seguinte resposta é retornada:
+```http
+HTTP/1.1 409 Conflict
+Content-Type: application/json
+```
+```json
+{
+    "message": "Contact already exists. Existing ID: 105094211225",
+    "error": "CONFLICT",
+    "timestamp": 1741644095810,
+    "details": [
+        "23ee15ea-399b-4bee-a534-6432802cfe27",
+        "error"
+    ]
+}
+```
+
+### Auth url
+Exemplo de requisição:
+```bash
+curl -X GET <host>/auth/url
+```
+Exemplo de retorno:
+```http
+HTTP/1.1 302 Found
+Location: https://app.hubspot.com/oauth/authorize?client_id=63bd6f55-9ea8-4f23-9b95-ef4f945aa5e1&redirect_uri=https%3A%2F%2Fhubspot-contacts.onrender.com%2Fauth%2Foauth-callback&scope=oauth+crm.objects.contacts.write+crm.objects.contacts.read
+Content-Type: text/html; charset=UTF-8
+```
+
+
+### Auth callback
+Exemplo de requisição
+```bash
+curl -X GET "<host>/auth/oauth-callback?code=<code>"
+```
+Exemplo de resposta
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json
+```
+```json
+{
+  "access_token": "token",
+  "token_type": "bearer",
+  "expires_in": 1800,
+  "refresh_token": "refresh_token"
+}
+```
+
+### Criação de contato
+Exemplo de requisição:
+```bash
+curl --location '<host>/contacts' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: Bearer <token>' \
+--data-raw '{
+    "email":"test33333456@email.com",
+    "firstName":"Vinicius",
+    "lastName":"Fernandes"
+}'
+```
+Exemplo de resposta
+```http
+HTTP/1.1 201 Created
+Content-Type: application/json
+```
+```json
+{
+    "id": 105094211225,
+    "properties": {
+        "email": "test333334516@email.com",
+        "lastname": "Fernandes",
+        "firstname": "Vinicius"
+    }
+}
+```
+
+### Webhook
+Exemplo de requisição
+```bash
+curl -X POST <host>/webhook \
+     -H "Content-Type: application/json" \
+     -H "X-HubSpot-Signature-v3: <hubspot-signature>" \
+     -H "X-HubSpot-Request-Timestamp: 1710097200" \
+     -d '[  
+          { "event": "contact.created", "contactId": "123456" },  
+        ]'
+```
+Exemplo de resposta
+```http
+HTTP/1.1 202 Accepted
+```
+Os headers X-HubSpot-Signature-v3 e X-HubSpot-Request-Timestamp são utilizado para validação conforme descrito na [documentação](https://developers.hubspot.com/docs/guides/apps/authentication/validating-requests).
+
+
 
 ## Requisitos
 - Uma conta no HubSpot e credenciais para utilizar a autenticação via OAuth 2.0
@@ -28,7 +165,7 @@ A API também oferece um endpoint de integração com a API do HubSpot para a cr
 4. **Client ID e Client Secret**: Anote o **Client ID** e o **Client Secret** do seu aplicativo público, que serão necessários para a autenticação.
 
 ### Webhook
-Nosso projeto processa eventos do tipo "contact.creation", siga a [documentação dos webhooks](https://developers.hubspot.com/docs/guides/api/app-management/webhooks#webhook-settings) para configurar seu webhook.
+O serviço processa eventos do tipo "contact.creation", siga a [documentação dos webhooks](https://developers.hubspot.com/docs/guides/api/app-management/webhooks#webhook-settings) para configurar seu webhook.
 
 Para testar o webhook localmente não conseguimos utilizar diretamente o localhost como fizemos para a URL de redirecionamento. Nesse caso podemos utilizar o ngrok, ou ferramentas similares, para expor nosso servidor local à internet e com isso possibilitar o uso do webhook.
 
@@ -119,6 +256,7 @@ Java version: 21.0.6
 
 4. Execute a aplicação
 ```shell
+mvn clean install
 mvn spring-boot:run
 ```
 5. Execute testes
