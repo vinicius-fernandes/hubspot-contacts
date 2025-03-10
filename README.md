@@ -283,7 +283,7 @@ mvn test
 
 
 ## Referências
-(https://www.baeldung.com/spring-bucket4j)[https://www.baeldung.com/spring-bucket4j]
-(https://developers.hubspot.com/docs/guides/api/app-management/webhooks)[https://developers.hubspot.com/docs/guides/api/app-management/webhooks]
-(https://developers.hubspot.com/docs/guides/api/app-management/oauth-tokens)[https://developers.hubspot.com/docs/guides/api/app-management/oauth-tokens]
-(https://developers.hubspot.com/docs/reference/api/crm/objects/contacts)[https://developers.hubspot.com/docs/reference/api/crm/objects/contacts]
+- [Bucket4J](https://www.baeldung.com/spring-bucket4j)
+- [Hubspot webhooks](https://developers.hubspot.com/docs/guides/api/app-management/webhooks)
+- [Hubspot OAuth tokens](https://developers.hubspot.com/docs/guides/api/app-management/oauth-tokens)
+- [Hubspot contacts API](https://developers.hubspot.com/docs/reference/api/crm/objects/contacts)
