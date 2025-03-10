@@ -2,6 +2,12 @@
 Este repositório implementa uma API para integração com o HubSpot, utilizando autenticação via OAuth 2.0 (authorization code flow). 
 A API também oferece um endpoint de integração com a API do HubSpot para a criação de contatos e permite o recebimento de notificações via webhooks.
 
+Uma versão do projeto está disponível em: [https://hubspot-contacts.onrender.com](https://hubspot-contacts.onrender.com). 
+
+Como o nível gratuito do render foi utilizado, instabilidades são esperadas para esse deploy. Por exemplo, após muito tempo de inatividade as próximas requisições podem demorar em torno de 50 segundos até que uma resposta seja obtida. 
+
+Sinta-se a vontade para utilizar esse serviço em seus testes.
+
 ## Índice
 - [Estrutura do projeto](#estrutura-do-projeto)
 - [Principais tecnologias e dependências](#principais-tecnologias-e-dependências)
@@ -14,6 +20,7 @@ A API também oferece um endpoint de integração com a API do HubSpot para a cr
   - [Variáveis de ambiente](#variáveis-de-ambiente)
   - [Execução com Docker](#execução-com-docker)
 - [Contribuindo com o Projeto](#contribuindo-com-o-projeto)
+- [Detalhes e melhorias futuras](#detalhes-e-melhorias-futuras)
 
 ## Estrutura do projeto
 O projeto está estruturado da seguinte forma:
@@ -263,6 +270,15 @@ mvn spring-boot:run
 ```shell
 mvn test
 ```
+
+## Detalhes e melhorias futuras
+### Detalhes sobre a implementação
+
+### Pontos de melhoria
+- [ ] Aumentar a cobertura de testes e incluir testes de integração.
+- [ ] Salvar o processamento dos dados enviados pelo webhook de alguma forma. Por exemplo, publicando os dados recebidos em um tópico do Kafka para que esses dados possam ser processados por outros serviços que consomem esse tópico.
+- [ ] Melhorar o fluxo de autenticação provendo alguma interface que utilize o endpoint de redirecionamento.
+- [ ] Implementar a lógica de rate limit em um proxy reverso como o nginx ou em um API Gateway como o Kong.
 
 
 
