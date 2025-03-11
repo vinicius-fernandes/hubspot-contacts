@@ -10,6 +10,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.NoHandlerFoundException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -73,9 +75,9 @@ public class GlobalExceptionHandler {
         );
     }
 
-    @ExceptionHandler(RuntimeException.class)
+    @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ApplicationError handleRuntimeException(RuntimeException ex) {
+    public ApplicationError handleRuntimeException(Exception ex) {
         logger.error("Runtime exception, details: {}", ex.getMessage());
 
         return new ApplicationError(
@@ -103,6 +105,16 @@ public class GlobalExceptionHandler {
         return new ApplicationError(
                 "Invalid access token",
                 "INVALID_ACCESS_TOKEN",
+                List.of(ex.getMessage())
+        );
+    }
+    @ExceptionHandler(NoResourceFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ApplicationError handleNoResourceFoundException(NoResourceFoundException ex) {
+
+        return new ApplicationError(
+                "The desired resource is not available",
+                "ROUTE_NOT_FOUND",
                 List.of(ex.getMessage())
         );
     }
