@@ -51,6 +51,7 @@ O projeto está estruturado da seguinte forma:
 - **Spring Boot Starter Web:** Para o desenvolvimento de APIs REST utilizando Spring Boot sem a necessidade de configurações manuais.
 - **Spring Boot Starter Validation:** Adiciona suporte para validação de campos com anotações como @NotBlank e @Email
 - **Spring Boot Starter Test:** Inclui o ferramental básico para tests unitários e de integração
+- **Bucket4j**: Utilizado para definir rate limits para os endpoints
 
 ## Endpoints
 | Método  | Endpoint             | Descrição                        | Parâmetros |
@@ -281,4 +282,8 @@ mvn test
 - [ ] Implementar a lógica de rate limit em um proxy reverso como o nginx ou em um API Gateway como o Kong.
 
 
-
+## Referências
+- [Bucket4J](https://www.baeldung.com/spring-bucket4j)
+- [Hubspot webhooks](https://developers.hubspot.com/docs/guides/api/app-management/webhooks)
+- [Hubspot OAuth tokens](https://developers.hubspot.com/docs/guides/api/app-management/oauth-tokens)
+- [Hubspot contacts API](https://developers.hubspot.com/docs/reference/api/crm/objects/contacts)
