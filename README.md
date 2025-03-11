@@ -275,12 +275,34 @@ mvn test
 
 ## Detalhes e melhorias futuras
 ### Detalhes sobre a implementação
+#### Validação de requisições do Hubspot
+Para garantir que as requisições que esperamos que sejam do Hubspot de fato sejam dele, é necessário validar tais requisições.
+Nessa validação utilizamos os headers
+```
+X-HubSpot-Signature-v3
+HubSpot-Request-Timestam
+```
+As regras de validação foram implementadas conforme descrito na [documentação](https://developers.hubspot.com/docs/guides/apps/authentication/validating-requests#validate-the-v3-request-signature).
+
+O serviço ```WebhookValidationService``` é o responsável por realizar essa validação.
+```javax.crypto.Mac``` e ```javax.crypto.spec.SecretKeySpec``` criar uma HMAC SHA-256 hash utlizando a string concatenada ```requestMethod+requestUri+requestBody+timestamp``` como secret.
+
+A hash gerada é então comparada com o valor do header ```X-HubSpot-Signature-v3```.
+
+#### Estrutura do projeto
+O projeto foi estruturado de forma a garantir a separação de responsabilidades entre diferentes camadas.
+Os endpoints foram construindos com atenção às melhores práticas e convenções de nomes geralmente empregados em APIs REST.
+
+#### Fluxo geral da aplicação
+Os fluxos possíveis na aplicação são descritos da seguinte forma:
+![image](https://github.com/user-attachments/assets/141c3094-872a-440d-aa84-687ab7729fce)
+
 
 ### Pontos de melhoria
 - [ ] Aumentar a cobertura de testes e incluir testes de integração.
 - [ ] Salvar o processamento dos dados enviados pelo webhook de alguma forma. Por exemplo, publicando os dados recebidos em um tópico do Kafka para que esses dados possam ser processados por outros serviços que consomem esse tópico.
 - [ ] Melhorar o fluxo de autorização provendo alguma interface que utilize o endpoint de redirecionamento.
-- [ ] Melhorar o fluxo de autorização e a segurança da aplicação utlizando [Spring Security](https://docs.spring.io/spring-security/reference) e o [OAuth2 Client](https://docs.spring.io/spring-security/reference/servlet/oauth2/client/authorization-grants.html#oauth2-client-authorization-code), garantindo com isso configurações padrões de segurança e uma forma mais simples de lidar com a autenticação.
+- [ ] Melhorar o fluxo de autorização e a segurança da aplicação utilizando [Spring Security](https://docs.spring.io/spring-security/reference) e o [OAuth2 Client](https://docs.spring.io/spring-security/reference/servlet/oauth2/client/authorization-grants.html#oauth2-client-authorization-code), garantindo com isso configurações padrões de segurança e uma forma mais simples de lidar com a autenticação. Além disso incluir funcionalidades como o refresh token.
 - [ ] Implementar a lógica de rate limit em um proxy reverso como o nginx ou em um API Gateway como o Kong.
 
 
