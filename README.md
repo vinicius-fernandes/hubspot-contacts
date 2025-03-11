@@ -304,6 +304,7 @@ Os fluxos possíveis na aplicação são descritos da seguinte forma:
 - [ ] Melhorar o fluxo de autorização provendo alguma interface que utilize o endpoint de redirecionamento.
 - [ ] Melhorar o fluxo de autorização e a segurança da aplicação utilizando [Spring Security](https://docs.spring.io/spring-security/reference) e o [OAuth2 Client](https://docs.spring.io/spring-security/reference/servlet/oauth2/client/authorization-grants.html#oauth2-client-authorization-code), garantindo com isso configurações padrões de segurança e uma forma mais simples de lidar com a autenticação. Além disso incluir funcionalidades como o refresh token.
 - [ ] Implementar a lógica de rate limit em um proxy reverso como o nginx ou em um API Gateway como o Kong.
+- [ ] Melhorar a documentação da api gerada pelo Spring Doc
 
 
 ## Referências
