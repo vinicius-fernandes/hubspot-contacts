@@ -51,6 +51,7 @@ O projeto está estruturado da seguinte forma:
 - **Spring Boot Starter Web:** Para o desenvolvimento de APIs REST utilizando Spring Boot sem a necessidade de configurações manuais.
 - **Spring Boot Starter Validation:** Adiciona suporte para validação de campos com anotações como @NotBlank e @Email
 - **Spring Boot Starter Test:** Inclui o ferramental básico para tests unitários e de integração
+- **Spring Doc** Para gerar automaticamente a documentação da API
 - **Bucket4j**: Utilizado para definir rate limits para os endpoints
 
 ## Endpoints
@@ -278,7 +279,8 @@ mvn test
 ### Pontos de melhoria
 - [ ] Aumentar a cobertura de testes e incluir testes de integração.
 - [ ] Salvar o processamento dos dados enviados pelo webhook de alguma forma. Por exemplo, publicando os dados recebidos em um tópico do Kafka para que esses dados possam ser processados por outros serviços que consomem esse tópico.
-- [ ] Melhorar o fluxo de autenticação provendo alguma interface que utilize o endpoint de redirecionamento.
+- [ ] Melhorar o fluxo de autorização provendo alguma interface que utilize o endpoint de redirecionamento.
+- [ ] Melhorar o fluxo de autorização e a segurança da aplicação utlizando [Spring Security](https://docs.spring.io/spring-security/reference) e o [OAuth2 Client](https://docs.spring.io/spring-security/reference/servlet/oauth2/client/authorization-grants.html#oauth2-client-authorization-code), garantindo com isso configurações padrões de segurança e uma forma mais simples de lidar com a autenticação.
 - [ ] Implementar a lógica de rate limit em um proxy reverso como o nginx ou em um API Gateway como o Kong.
 
 
@@ -287,3 +289,4 @@ mvn test
 - [Hubspot webhooks](https://developers.hubspot.com/docs/guides/api/app-management/webhooks)
 - [Hubspot OAuth tokens](https://developers.hubspot.com/docs/guides/api/app-management/oauth-tokens)
 - [Hubspot contacts API](https://developers.hubspot.com/docs/reference/api/crm/objects/contacts)
+- [Spring Doc](https://springdoc.org/)
